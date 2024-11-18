@@ -2,12 +2,37 @@
 
 This project intends to tracks the qualitative sentiments surrounding a list of cryptocurrencies in real time. This is accomplished through a use of web scraping websites, primarily Reddit, and NLP sentiment techniques used to determine the sentiment of individual Reddit posts mentioning cryptos. 
 
-## Features
 
-1. Python-based web scraper.
-2. PyTorch-based sentiment analyzer. 
+## Project Structure
+- reddit-scraper: Handles Reddit API integration and post collection
+- sentiment-analyzer: Processes collected posts for sentiment analysis
 
 
+## Setup
+
+1. Clone the repository
+```bash
+git clone 
+cd crypto-sentiment-analyzer
+```
+
+2. Install dependencies
+```bash
+pip install -r requirements.txt
+```
+
+3. Set up environment variables
+```bash
+cp .env.example .env
+```
+Then edit `.env` with your Reddit API credentials from https://www.reddit.com/prefs/apps
+
+4. Test the Reddit connection
+```bash
+python reddit-scraper/reddit_client.py
+```
+
+<!-- 
 ## Installation
 
 ```bash
@@ -76,4 +101,4 @@ See `contributing.md` for ways to get started.
 ## Acknowledgments
 
 - Reference 1
-- Reference 2
+- Reference 2 -->
