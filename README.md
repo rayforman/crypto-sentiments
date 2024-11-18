@@ -7,13 +7,17 @@ This project intends to tracks the qualitative sentiments surrounding a list of 
 - reddit-scraper: Handles Reddit API integration and post collection
 - sentiment-analyzer: Processes collected posts for sentiment analysis
 
+## Limitations
+- Currently fetches the 100 most recent posts from each subreddit, then searches for key terms. 
+- Depending on activity level of subreddits, can fetch old data. 
+- Next Steps: fetching data within a specified recent timeframe. 
 
 ## Setup
 
 1. Clone the repository
 ```bash
-git clone 
-cd crypto-sentiment-analyzer
+git clone https://github.com/rayforman/crypto-sentiments.git
+cd crypto-sentiments
 ```
 
 2. Install dependencies
@@ -32,52 +36,8 @@ Then edit `.env` with your Reddit API credentials from https://www.reddit.com/pr
 python reddit-scraper/reddit_client.py
 ```
 
+
 <!-- 
-## Installation
-
-```bash
-# Installation steps here
-npm install my-project
-```
-
-## Usage
-
-```javascript
-// Basic usage example
-const myProject = require('my-project');
-myProject.doSomething();
-```
-
-## API Reference
-
-#### Function 1
-
-```javascript
-  functionName(param1, param2)
-```
-
-| Parameter | Type     | Description                |
-| :-------- | :------- | :------------------------- |
-| `param1` | `string` | Description of param1 |
-| `param2` | `string` | Description of param2 |
-
-## Environment Variables
-
-To run this project, you will need to add the following environment variables to your .env file
-
-`API_KEY`
-
-`ANOTHER_API_KEY`
-
-## Run Locally
-
-```bash
-git clone https://github.com/username/project
-cd project
-npm install
-npm start
-```
-
 ## Running Tests
 
 ```bash
@@ -101,4 +61,4 @@ See `contributing.md` for ways to get started.
 ## Acknowledgments
 
 - Reference 1
-- Reference 2 -->
+- Reference 2 --> --> -->

@@ -1,0 +1,54 @@
+# Crypto Terms and Subreddits for Search 
+
+crypto_terms:
+  bitcoin:
+    - bitcoin
+    - btc
+    - bitcoin crypto
+    - btccrypto
+    - $btc
+    - btcusd
+    - xbt
+    - $xbt
+    - ₿
+    - bitcoin core
+  dogecoin:
+    - dogecoin
+    - doge
+    - dogecoins
+    - $doge
+    - dogeusd
+    - Ð
+    - dogecoin crypto
+  shiba:
+    - shiba inu
+    - shib
+    - shibainu
+    - shiba token
+    - $shib
+    - shibusd
+    - shiba crypto
+    - shibarmy
+  pepe:
+    - pepe crypto
+    - $pepe
+    - pepeusd
+    - pepe token
+
+subreddits:
+  - cryptocurrency
+  - cryptomarkets
+  - cryptocurrencies
+  - memecoins
+  - bitcoin
+  - dogecoin
+  - shibarmy
+  - SatoshiStreetBets
+  - CryptoMoonShots
+  - altcoin
+  - binance
+  - CoinBase
+  - WallStreetBetsCrypto
+  - wallstreetbets
+  - Shibainucoin
+  - Pepecryptocurrency
