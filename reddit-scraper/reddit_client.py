@@ -10,6 +10,7 @@ import threading
 from itertools import cycle
 from textblob import TextBlob
 import argparse
+import math
 
 # Load environment variables from .env file
 load_dotenv()
@@ -199,7 +200,7 @@ class RedditClient:
         days_since_post = (current_time - post_time).total_seconds() / (24 * 3600)
         
         # Calculate time decay weight
-        time_weight = 1 / (days_since_post + 1)
+        time_weight = self.get_time_weight(days_since_post)
         
         # Get base sentiment from title and text
         # Combine title and available text for analysis
@@ -225,6 +226,22 @@ class RedditClient:
         final_sentiment = base_sentiment * time_weight * quality_weight
         
         return final_sentiment
+
+    # Function to calculate time decay weight: edit this as needed
+    @staticmethod
+    def get_time_weight(days_since_post: float) -> float:
+        """
+        Calculate time decay weight using exponential decay
+        λ = 0.5 means:
+        - Same day posts (0 days): weight = 1.0
+        - 1 day old: weight ≈ 0.6
+        - 3 days old: weight ≈ 0.22
+        - 7 days old: weight ≈ 0.03
+        - 14 days old: weight ≈ 0.001
+        - 30 days old: weight ≈ 0.000001
+        """
+        lambda_param = 0.5  # Adjust this to control decay speed
+        return math.exp(-lambda_param * days_since_post)
 
     def calculate_sentiment_ratings(self, posts_dict: Dict[str, List[Dict]]) -> Dict[str, float]:
         """
