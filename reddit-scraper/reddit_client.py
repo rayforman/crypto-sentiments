@@ -8,6 +8,8 @@ import sys
 import time
 import threading
 from itertools import cycle
+from textblob import TextBlob
+import argparse
 
 # Load environment variables from .env file
 load_dotenv()
@@ -65,7 +67,7 @@ class RedditClient:
             for term in self.crypto_terms[crypto_name]
         )
 
-    def get_crypto_mentions(self, limit: int = 10) -> Dict[str, List[Dict]]:
+    def get_crypto_mentions(self, limit: int = 100) -> Dict[str, List[Dict]]:
         """
         Fetch recent posts mentioning our tracked cryptocurrencies.
         Returns a dictionary with cryptocurrency names as keys and lists of relevant posts as values.
@@ -177,10 +179,104 @@ class RedditClient:
         print(f"Search completed at: {current_time.strftime('%Y-%m-%d %H:%M:%S')}")
         print("="*60)
 
+    def get_post_sentiment(self, post: Dict) -> float:
+        """
+        Calculate the time-weighted sentiment score for a single post.
+        
+        Args:
+            post (Dict): Post dictionary containing 'timestamp', 'title', 'text', 
+                        'score', and 'upvote_ratio'
+        
+        Returns:
+            float: Weighted sentiment score where:
+                - Positive numbers indicate buy signals
+                - Negative numbers indicate sell signals
+                - Magnitude indicates strength of signal
+        """
+        # Convert post timestamp to datetime
+        post_time = datetime.strptime(post['timestamp'], "%Y-%m-%d %H:%M:%S")
+        current_time = datetime.now()
+        days_since_post = (current_time - post_time).total_seconds() / (24 * 3600)
+        
+        # Calculate time decay weight
+        time_weight = 1 / (days_since_post + 1)
+        
+        # Get base sentiment from title and text
+        # Combine title and available text for analysis
+        full_text = f"{post['title']} {post['text']}"
+        
+        # Use TextBlob for sentiment analysis
+        analysis = TextBlob(full_text)
+        
+        # Convert polarity to base sentiment (-1 or +1)
+        # You might want to adjust these thresholds
+        if analysis.sentiment.polarity > 0.1:
+            base_sentiment = 1
+        elif analysis.sentiment.polarity < -0.1:
+            base_sentiment = -1
+        else:
+            base_sentiment = 0
+            
+        # Factor in post score and upvote ratio as quality metrics
+        # Normalize score impact (you may want to adjust these weights)
+        quality_weight = post['upvote_ratio'] * min(1, post['score'] / 100)
+        
+        # Combine all factors
+        final_sentiment = base_sentiment * time_weight * quality_weight
+        
+        return final_sentiment
+
+    def calculate_sentiment_ratings(self, posts_dict: Dict[str, List[Dict]]) -> Dict[str, float]:
+        """
+        Calculate overall sentiment ratings for each cryptocurrency.
+        
+        Args:
+            posts_dict (Dict[str, List[Dict]]): Dictionary mapping crypto symbols to their posts
+            
+        Returns:
+            Dict[str, float]: Dictionary mapping crypto symbols to their overall sentiment scores
+        """
+        sentiment_ratings = {}
+        
+        for crypto, posts in posts_dict.items():
+            if not posts:  # Skip if no posts found
+                sentiment_ratings[crypto] = 0.0
+                continue
+                
+            # Sum up weighted sentiments for all posts
+            total_sentiment = sum(self.get_post_sentiment(post) for post in posts)
+            sentiment_ratings[crypto] = total_sentiment
+        
+        return sentiment_ratings
+
 def main():
+    # Set up argument parser
+    parser = argparse.ArgumentParser(description='Reddit Crypto Sentiment Analysis')
+    parser.add_argument('-n', '--num_posts', 
+                       type=int, 
+                       default=100,
+                       help='Number of posts to analyze per subreddit (default: 100)')
+    
+    # Parse arguments
+    args = parser.parse_args()
+    
+    # Instantiate class
     client = RedditClient()
-    crypto_mentions = client.get_crypto_mentions(limit=100)  # Check last 100 posts per subreddit
-    client.print_crypto_mentions(crypto_mentions)
+    crypto_mentions = client.get_crypto_mentions(limit=args.num_posts)  # Gets last args.num_posts posts per subreddit
+
+    # Get sentiment ratings
+    sentiment_ratings = client.calculate_sentiment_ratings(crypto_mentions)
+    
+    # Print mentions
+    # client.print_crypto_mentions(crypto_mentions)
+    
+    # Print sentiment summary
+    print("\nSENTIMENT RATINGS")
+    print("=" * 40)
+    for crypto, rating in sentiment_ratings.items():
+        print(f"{crypto.upper()}: {rating:.3f}")
+
+
 
 if __name__ == "__main__":
     main()
