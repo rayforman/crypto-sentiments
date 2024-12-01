@@ -3,4 +3,3 @@ python-dotenv==1.0.0
 PyYAML==6.0.2
 textblob==0.15.3
 argparse==1.4.0
-math==1.0.0
