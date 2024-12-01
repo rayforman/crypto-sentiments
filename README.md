@@ -1,16 +1,34 @@
 # Cryptocurrency Sentiment Tracker
 
-This project intends to tracks the qualitative sentiments surrounding a list of cryptocurrencies in real time. This is accomplished through a use of web scraping websites, primarily Reddit, and NLP sentiment techniques used to determine the sentiment of individual Reddit posts mentioning cryptos. 
+This project tracks qualitative sentiments surrounding cryptocurrencies in real time. It uses web scraping of Reddit posts combined with NLP sentiment analysis to generate time-weighted sentiment scores for various cryptocurrencies. The sentiment scores can be used as qualitative indicators for algorithmic trading systems.
 
+## How It Works
+- Scrapes Reddit posts mentioning tracked cryptocurrencies
+- Analyzes sentiment of each post using NLP
+- Applies exponential time decay to weight recent posts more heavily
+- Aggregates weighted sentiments into a Buy-Sell rating (-∞ to +∞)
+  - Positive scores suggest bullish sentiment
+  - Negative scores suggest bearish sentiment
+  - Magnitude indicates strength of sentiment
 
 ## Project Structure
 - reddit-scraper: Handles Reddit API integration and post collection
 - sentiment-analyzer: Processes collected posts for sentiment analysis
+- config.yaml: Configure tracked cryptocurrencies and subreddits
 
-## Limitations
-- Currently fetches the 100 most recent posts from each subreddit, then searches for key terms. 
-- Depending on activity level of subreddits, can fetch old data. 
-- Next Steps: fetching data within a specified recent timeframe. 
+## Usage
+```bash
+python reddit-scraper/reddit_client.py [-n NUM_POSTS]
+```
+Optional arguments:
+- `-n`, `--num_posts`: Number of posts to analyze per subreddit (default: 100)
+
+## Time Weighting
+Posts are weighted by recency using exponential decay:
+- Same-day posts receive maximum weight
+- Weight decreases exponentially with age
+- Posts older than 30 days receive negligible weight
+- This ensures sentiment scores reflect current market sentiment
 
 ## Setup
 
@@ -36,29 +54,15 @@ Then edit `.env` with your Reddit API credentials from https://www.reddit.com/pr
 python reddit-scraper/reddit_client.py
 ```
 
+## Limitations
+- Sentiment analysis uses general-purpose NLP that may miss crypto-specific terminology
+- Quality of sentiment depends on activity level in tracked subreddits
+- Base sentiment is simplified to positive/negative without nuanced scoring
 
-<!-- 
-## Running Tests
+## Next Steps
+- Implement crypto-specific sentiment analysis
+- Add more data sources beyond Reddit
+- Add sentiment visualization and tracking over time
+- Implement automated trading signals
 
-```bash
-npm run test
-```
-
-## Contributing
-
-Contributions are always welcome!
-
-See `contributing.md` for ways to get started.
-
-## License
-
-[MIT](https://choosealicense.com/licenses/mit/)
-
-## Authors
-
-- [@username](https://www.github.com/username)
-
-## Acknowledgments
-
-- Reference 1
-- Reference 2 --> --> -->
+<!-- Rest of the template sections remain commented out as before -->
